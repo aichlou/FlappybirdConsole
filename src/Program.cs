@@ -13,8 +13,8 @@ namespace FlappyBird_Replica_ConsoleVersion
         public ConsoleKeyInfo keypress = new ConsoleKeyInfo();
         public Random rand = new Random();
 
-        public StreamReader sr;
-        public StreamWriter sw;
+        public StreamReader? sr;
+        public StreamWriter? sw;
 
 
         public int score, highscore, pivotX, pivotY, height, width, falldelay, wingDelay, raiseSpeed, fallSpeed;
@@ -35,8 +35,10 @@ namespace FlappyBird_Replica_ConsoleVersion
         public int splitStart2, splitLength2, pipePivotX2;
 
         private bool gameOver, restart, isfly, isPrinted;
-        private string dirFile = "D:\\FlappyBird";
-        private string highscoreFile = "D:\\FlappyBird\\saved_game.txt";
+        private readonly string dirFile =
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),"FlappyBird");
+      private readonly string highscoreFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),"FlappyBird","saved_game.txt");
+
 
         void ShowMainMenu()
         {
@@ -486,9 +488,8 @@ namespace FlappyBird_Replica_ConsoleVersion
         {
             try
             {
-                string num;
                 sr = new StreamReader(highscoreFile);
-                while ((num = sr.ReadLine()) != null)
+                while (sr.ReadLine() is string num)
                 {
                     highscore = int.Parse(num);
                 }
@@ -508,9 +509,12 @@ namespace FlappyBird_Replica_ConsoleVersion
             height = 30;
             width = 60;
 
+            try {
             Console.SetWindowSize(width, height + 5);
             Console.ForegroundColor = ConsoleColor.Green;
             Console.CursorVisible = false;
+            }
+            catch {}
 
             score = 0;
             falldelay = 0;
@@ -709,7 +713,7 @@ namespace FlappyBird_Replica_ConsoleVersion
                 DeadCheck();
                 if (gameOver || restart)
                     break;
-                //Thread.Sleep(10);
+                Thread.Sleep(50);
             }
             if (gameOver)
             {
